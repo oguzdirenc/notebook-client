@@ -1,4 +1,8 @@
+body {
+  background-image: url("background.jpg") !important;
+}
 .todoList-segment {
+  background-color: ghostwhite !important;
   min-height: 200% !important;
 }
 .add-item-button {

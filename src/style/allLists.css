@@ -20,6 +20,7 @@
   margin-left: 65% !important;
 }
 .all-list-segment {
+  background-color: ghostwhite !important;
   min-height: 200%;
 }
 .todoList-validation-error {
@@ -31,7 +32,7 @@
 }
 .todoList-card {
   box-shadow: 5px 5px 3px 1px rgba(0, 0, 0, 0.18) !important;
-  background-color: darkorange !important;
+  background-color: white !important;
   width: 70% !important;
   margin-left: 15% !important;
   border-radius: 15px !important;
@@ -43,6 +44,17 @@
 }
 .todoList-header {
   margin-top: 1% !important;
+  color: #4c4a37 !important;
+  font-family: "Source Sans Pro", sans-serif !important;
+  font-size: 18px !important;
+  line-height: 18px !important;
+}
+.todoList-description {
+  margin-top: 1% !important;
+  color: #4c4a37 !important;
+  font-family: "Source Sans Pro", sans-serif !important;
+  font-size: 14px !important;
+  line-height: 14px !important;
 }
 .todoList-itemCount {
   text-align: left !important;
@@ -54,7 +66,6 @@
 }
 .todoList-empty-message {
   box-shadow: 5px 5px 3px 1px rgba(0, 0, 0, 0.18) !important;
-  background-color: darkorange !important;
   width: 70% !important;
   margin-left: 15% !important;
   margin-top: 12% !important;

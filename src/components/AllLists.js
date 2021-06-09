@@ -22,7 +22,6 @@ import { todoId } from "../redux/actions/todoIdAction";
 import {
   errorMessage,
   getUserTodoListsUsrl,
-  primaryColor,
   saveTodoListUrl,
 } from "../api/constants";
 import "../style/allLists.css";
@@ -198,8 +197,8 @@ class AllLists extends Component {
             <Grid.Column width={9}>
               <Segment raised className="all-list-segment">
                 <Button
+                  primary
                   className="create-list-button"
-                  color={primaryColor}
                   onClick={() => this.setState({ saveModalOpen: true })}
                 >
                   <Icon name="plus" />
@@ -229,12 +228,14 @@ class AllLists extends Component {
                           <Item.Header className="todoList-header" as="a">
                             {todoList.todoListHeader}
                           </Item.Header>
-                          <Item.Meta>{todoList.todoListDescription}</Item.Meta>
+                          <Item.Meta className="todoList-description">
+                            {todoList.todoListDescription}
+                          </Item.Meta>
                           <Item.Extra>
                             <Grid>
                               <Grid.Row>
                                 <Grid.Column width={8}>
-                                  <Item.Meta className="todoList-itemCount">
+                                  <Item.Meta className="todoList-itemCount todoList-description">
                                     {todoList.listItemCount} item(s)
                                   </Item.Meta>
                                 </Grid.Column>

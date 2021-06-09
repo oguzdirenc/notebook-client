@@ -11,5 +11,4 @@ export const getTodoItemsUrl = itemUrl + "/get";
 export const saveTodoItemUrl = itemUrl + "/save";
 export const deleteItemUrl = itemUrl + "/delete";
 
-export const primaryColor = "orange";
 export const errorMessage = "An error occurred";
