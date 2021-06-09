@@ -1,0 +1,35 @@
+.todoList-segment {
+  min-height: 200% !important;
+}
+.add-item-button {
+  margin-top: 7% !important;
+  margin-left: 0% !important;
+  color: green !important;
+  background-color: greenyellow !important;
+}
+.todoList-request-header {
+  color: #003a72 !important;
+  font-size: 28px !important;
+  font-family: "Signika", sans-serif !important;
+}
+.item-description-font {
+  text-align: left !important;
+  color: #4c4a37 !important;
+  font-family: "Source Sans Pro", sans-serif !important;
+  font-size: 18px !important;
+  line-height: 18px !important;
+}
+.todoList-item-align {
+  margin-top: 3% !important;
+}
+.delete-icon {
+  margin-top: -90% !important;
+}
+.delete-icon:hover {
+  color: red;
+  cursor: pointer;
+}
+.divider-align {
+  margin-top: 3% !important;
+  margin-bottom: 3% !important;
+}

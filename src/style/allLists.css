@@ -1,0 +1,74 @@
+.input {
+  display: flex;
+  align-items: center;
+  margin: 3px;
+}
+.label-list {
+  width: 15% !important;
+  font-weight: bold;
+}
+.input-width {
+  width: 75% !important;
+}
+.save-list-button {
+  margin-top: 5px !important;
+  margin-left: 74% !important;
+  margin-bottom: 2% !important;
+  width: 100px !important;
+}
+.create-list-button {
+  margin-left: 65% !important;
+}
+.all-list-segment {
+  min-height: 200%;
+}
+.todoList-validation-error {
+  width: auto;
+  margin-top: 1px !important;
+  margin-bottom: 5px !important;
+  margin-left: 17% !important;
+  color: red;
+}
+.todoList-card {
+  box-shadow: 5px 5px 3px 1px rgba(0, 0, 0, 0.18) !important;
+  background-color: darkorange !important;
+  width: 70% !important;
+  margin-left: 15% !important;
+  border-radius: 15px !important;
+}
+.todoList-card:hover {
+  cursor: pointer;
+  opacity: 0.9;
+  transform: translateY(-1%);
+}
+.todoList-header {
+  margin-top: 1% !important;
+}
+.todoList-itemCount {
+  text-align: left !important;
+  margin-left: 2% !important;
+}
+.todoList-usernames {
+  text-align: right !important;
+  margin-right: 2% !important;
+}
+.todoList-empty-message {
+  box-shadow: 5px 5px 3px 1px rgba(0, 0, 0, 0.18) !important;
+  background-color: darkorange !important;
+  width: 70% !important;
+  margin-left: 15% !important;
+  margin-top: 12% !important;
+  border-radius: 15px !important;
+  text-align: left;
+}
+.emptyList-message-header {
+  font-family: "Bitter", serif !important;
+  font-size: 25px !important;
+  font-weight: bold !important;
+  line-height: 54px !important;
+}
+.emptyList-message-p {
+  font-family: Georgia, serif !important;
+  font-size: 15px !important;
+  line-height: 28px !important;
+}
