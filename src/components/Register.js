@@ -127,7 +127,7 @@ class Register extends Component {
                   size="large"
                   onClick={this.handleRegister}
                 >
-                  Kayıt Ol
+                  Register
                 </Button>
               </Segment>
             </Form>
