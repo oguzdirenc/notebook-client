@@ -1,0 +1,11 @@
+.register-button-color {
+  background-color: #003a72 !important;
+  color: aliceblue !important;
+}
+.errorMessage {
+  margin-left: 1% !important;
+  margin-top: 0% !important;
+  padding-bottom: 0% !important;
+  text-align: left;
+  color: red;
+}

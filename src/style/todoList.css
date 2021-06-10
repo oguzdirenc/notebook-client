@@ -27,7 +27,7 @@ body {
   margin-top: 3% !important;
 }
 .delete-icon {
-  margin-top: -90% !important;
+  margin-right: 0% !important;
 }
 .delete-icon:hover {
   color: red;
@@ -36,4 +36,11 @@ body {
 .divider-align {
   margin-top: 3% !important;
   margin-bottom: 3% !important;
+}
+.addItem-validation-error {
+  width: auto !important;
+  color: red !important;
+  margin-top: 0% !important;
+  margin-bottom: 0% !important;
+  margin-right: 60% !important;
 }

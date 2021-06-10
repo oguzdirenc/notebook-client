@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import {
   Button,
+  Dimmer,
   Form,
   Grid,
   Header,
@@ -13,6 +14,7 @@ import {
   Item,
   Label,
   List,
+  Loader,
   Message,
   Modal,
   Popup,
@@ -25,6 +27,7 @@ import {
   saveTodoListUrl,
 } from "../api/constants";
 import "../style/allLists.css";
+import LoadButton from "./LoadButton";
 
 class AllLists extends Component {
   state = {
@@ -36,17 +39,23 @@ class AllLists extends Component {
     errors: [],
     errorMessage: "",
     todoLists: [],
+    isLoading: false,
   };
 
   componentDidMount() {
+    this.setState({ isLoading: true });
+
     axios
       .get(getUserTodoListsUsrl)
-      .then((response) => this.setState({ todoLists: response.data }));
+      .then((response) =>
+        this.setState({ isLoading: false, todoLists: response.data })
+      );
   }
 
   handleSaveButton = async () => {
     if (!_.isEmpty(this.state.sharedUsersName)) {
       await this.setState({
+        isLoading: true,
         sharedUsers: [...this.state.sharedUsers, this.state.sharedUsersName],
       });
     }
@@ -79,7 +88,9 @@ class AllLists extends Component {
 
     axios
       .get(getUserTodoListsUsrl)
-      .then((response) => this.setState({ todoLists: response.data }));
+      .then((response) =>
+        this.setState({ isLoading: false, todoLists: response.data })
+      );
   };
 
   handleSaveModalClose = () => {
@@ -176,13 +187,13 @@ class AllLists extends Component {
             ))}
           </Form>
         </Modal.Content>
-        <Button
-          positive
+        <LoadButton
           className="save-list-button"
           onClick={this.handleSaveButton}
-        >
-          Save
-        </Button>
+          isButtonLoading={this.state.isButtonLoading}
+          positive={true}
+          content="save"
+        />
       </Modal>
     );
   };
@@ -190,84 +201,90 @@ class AllLists extends Component {
   render() {
     return (
       <div>
-        <Grid>
-          <Grid.Row></Grid.Row>
-          <Grid.Row>
-            <Grid.Column width={3}></Grid.Column>
-            <Grid.Column width={9}>
-              <Segment raised className="all-list-segment">
-                <Button
-                  primary
-                  className="create-list-button"
-                  onClick={() => this.setState({ saveModalOpen: true })}
-                >
-                  <Icon name="plus" />
-                  New Todo List
-                </Button>
+        {this.state.isLoading ? (
+          <Dimmer active inverted>
+            <Loader size="large">Loading</Loader>
+          </Dimmer>
+        ) : (
+          <Grid>
+            <Grid.Row></Grid.Row>
+            <Grid.Row>
+              <Grid.Column width={3}></Grid.Column>
+              <Grid.Column width={9}>
+                <Segment raised className="all-list-segment">
+                  <Button
+                    icon
+                    className="create-list-button"
+                    onClick={() => this.setState({ saveModalOpen: true })}
+                  >
+                    <Icon name="plus" />
+                    New Todo List
+                  </Button>
 
-                {_.isEmpty(this.state.todoLists) ? (
-                  <Message className="todoList-empty-message">
-                    <Message.Header className="emptyList-message-header">
-                      <Icon name="attention" size="large"></Icon>To do list is
-                      empty
-                    </Message.Header>
-                    <p className="emptyList-message-p">
-                      To add some item in the list use the button above
-                    </p>
-                  </Message>
-                ) : (
-                  <Item.Group className="todoList-item-group">
-                    {this.state.todoLists.map((todoList) => (
-                      <Item
-                        as={Link}
-                        onClick={() => this.props.todoId(todoList.todoListId)}
-                        to="/todoList"
-                        className="todoList-card"
-                      >
-                        <Item.Content>
-                          <Item.Header className="todoList-header" as="a">
-                            {todoList.todoListHeader}
-                          </Item.Header>
-                          <Item.Meta className="todoList-description">
-                            {todoList.todoListDescription}
-                          </Item.Meta>
-                          <Item.Extra>
-                            <Grid>
-                              <Grid.Row>
-                                <Grid.Column width={8}>
-                                  <Item.Meta className="todoList-itemCount todoList-description">
-                                    {todoList.listItemCount} item(s)
-                                  </Item.Meta>
-                                </Grid.Column>
-                                <Grid.Column width={8}>
-                                  <Item.Meta className="todoList-usernames">
-                                    <Popup trigger={<Icon name="share" />}>
-                                      <List>
-                                        {todoList.usernameList.map(
-                                          (username) => (
-                                            <List.Item>{username}</List.Item>
-                                          )
-                                        )}
-                                      </List>
-                                    </Popup>
-                                  </Item.Meta>
-                                </Grid.Column>
-                              </Grid.Row>
-                            </Grid>
-                          </Item.Extra>
-                        </Item.Content>
-                      </Item>
-                    ))}
-                  </Item.Group>
-                )}
+                  {_.isEmpty(this.state.todoLists) ? (
+                    <Message warning className="todoList-empty-message">
+                      <Message.Header className="emptyList-message-header">
+                        You don't have a todo list yet
+                      </Message.Header>
+                      <p className="emptyList-message-p">
+                        To create new todo list use the button above
+                      </p>
+                    </Message>
+                  ) : (
+                    <Item.Group className="todoList-item-group">
+                      {this.state.todoLists.map((todoList) => (
+                        <Item
+                          as={Link}
+                          onClick={() => this.props.todoId(todoList.todoListId)}
+                          to="/todoList"
+                          className="todoList-card"
+                        >
+                          <Item.Content>
+                            <Item.Header className="todoList-header" as="a">
+                              {todoList.todoListHeader}
+                            </Item.Header>
 
-                {this.hadleSaveListModal()}
-              </Segment>
-            </Grid.Column>
-            <Grid.Column width={4}> </Grid.Column>
-          </Grid.Row>
-          <Grid.Row></Grid.Row>
-        </Grid>
+                            <Item.Meta className="todoList-description">
+                              {todoList.todoListDescription}
+                            </Item.Meta>
+                            <Item.Extra>
+                              <Grid>
+                                <Grid.Row>
+                                  <Grid.Column width={8}>
+                                    <Item.Meta className="todoList-itemCount todoList-description">
+                                      {todoList.listItemCount} item(s)
+                                    </Item.Meta>
+                                  </Grid.Column>
+                                  <Grid.Column width={8}>
+                                    <Item.Meta className="todoList-usernames">
+                                      <Popup trigger={<Icon name="share" />}>
+                                        <List>
+                                          {todoList.usernameList.map(
+                                            (username) => (
+                                              <List.Item>{username}</List.Item>
+                                            )
+                                          )}
+                                        </List>
+                                      </Popup>
+                                    </Item.Meta>
+                                  </Grid.Column>
+                                </Grid.Row>
+                              </Grid>
+                            </Item.Extra>
+                          </Item.Content>
+                        </Item>
+                      ))}
+                    </Item.Group>
+                  )}
+
+                  {this.hadleSaveListModal()}
+                </Segment>
+              </Grid.Column>
+              <Grid.Column width={4}> </Grid.Column>
+            </Grid.Row>
+            <Grid.Row></Grid.Row>
+          </Grid>
+        )}
       </div>
     );
   }

@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { Component } from "react";
+import _ from "lodash";
 import { connect } from "react-redux";
 import {
   Button,
@@ -10,6 +11,7 @@ import {
   Icon,
   Input,
   Label,
+  Message,
   Modal,
   Popup,
   Segment,
@@ -18,8 +20,10 @@ import {
   deleteItemUrl,
   getTodoItemsUrl,
   saveTodoItemUrl,
+  updateItemUrl,
 } from "../api/constants";
 import "../style/todoList.css";
+import LoadButton from "./LoadButton";
 
 class TodoList extends Component {
   state = {
@@ -27,14 +31,17 @@ class TodoList extends Component {
     itemDescription: "",
     updateModalOpen: false,
     updatedItem: {},
+    errors: {},
+    isLoading: false,
+    isButtonLoading: false,
   };
 
   async componentDidMount() {
+    this.setState({ isLoading: true });
     await axios
       .get(getTodoItemsUrl, { params: { todoListId: this.props.todoId } })
       .then((response) => {
-        this.setState({ todoList: response.data });
-        console.log(response.data);
+        this.setState({ isLoading: false, todoList: response.data });
       });
   }
 
@@ -56,24 +63,49 @@ class TodoList extends Component {
   };
 
   handleAddItem = async () => {
+    this.setState({ isButtonLoading: true });
     let itemSaveRequest = {
       itemDescription: this.state.itemDescription,
       todoListId: this.props.todoId,
     };
-
-    await axios.post(saveTodoItemUrl, itemSaveRequest);
-
-    axios
-      .get(getTodoItemsUrl, { params: { todoListId: this.props.todoId } })
-      .then((response) => {
-        this.setState({ todoList: response.data, itemDescription: "" });
-        console.log(response.data);
+    try {
+      await axios.post(saveTodoItemUrl, itemSaveRequest);
+      axios
+        .get(getTodoItemsUrl, { params: { todoListId: this.props.todoId } })
+        .then((response) => {
+          this.setState({
+            todoList: response.data,
+            itemDescription: "",
+            errors: {},
+            isButtonLoading: false,
+          });
+        });
+    } catch (error) {
+      this.setState({
+        errors: error.response.data,
       });
+    }
   };
 
   handleUpdateModalClose = () => {
     this.setState({
       updateModalOpen: false,
+    });
+  };
+
+  handleItemUpdateSubmit = async () => {
+    await axios.post(updateItemUrl, this.state.updatedItem);
+
+    axios
+      .get(getTodoItemsUrl, { params: { todoListId: this.props.todoId } })
+      .then((response) => {
+        this.setState({ todoList: response.data, updateModalOpen: false });
+      });
+  };
+
+  onChangeFollower = (event, data) => {
+    this.setState({
+      updatedItem: { ...this.state.updatedItem, itemStatus: data.value },
     });
   };
 
@@ -106,6 +138,7 @@ class TodoList extends Component {
               <Dropdown
                 defaultValue={this.state.updatedItem.itemStatus}
                 options={options}
+                onChange={this.onChangeFollower}
               />
             }
             labelPosition="left"
@@ -114,7 +147,9 @@ class TodoList extends Component {
           />
         </Modal.Content>
         <Modal.Actions>
-          <Button positive>Save</Button>
+          <Button positive onClick={this.handleItemUpdateSubmit}>
+            Save
+          </Button>
         </Modal.Actions>
       </Modal>
     );
@@ -123,121 +158,142 @@ class TodoList extends Component {
   todoListItems = () => {
     return (
       <Segment>
-        {this.state.todoList.todoListItems
-          ? this.state.todoList.todoListItems.map((item) => (
-              <div>
-                {item.itemStatus === 0 ? (
-                  <Grid>
-                    <Grid.Row className="todoList-item-align">
-                      <Grid.Column width={2}>
-                        <Popup
-                          content="Not Started"
-                          trigger={<Icon name="pin" color="red" />}
-                        />
-                      </Grid.Column>
-                      <Grid.Column width={10}>
-                        <h3 className="item-description-font">
-                          {item.itemDescription}
-                        </h3>
-                      </Grid.Column>
-                      <Grid.Column width={3}>
-                        <Label
-                          onClick={() =>
-                            this.setState({
-                              updateModalOpen: true,
-                              updatedItem: item,
-                            })
-                          }
-                          as="a"
-                        >
-                          <Icon name="pencil" />
-                          Edit
-                        </Label>
-                      </Grid.Column>
-                      <Grid.Column width={1}>
-                        <Icon
-                          className="delete-icon"
-                          onClick={() => this.handleItemDelete(item.itemId)}
-                          name="x"
-                        ></Icon>
-                      </Grid.Column>
-                    </Grid.Row>
-                    <Divider></Divider>
-                  </Grid>
-                ) : item.itemStatus === 1 ? (
-                  <Grid>
-                    <Grid.Row className="todoList-item-align">
-                      <Grid.Column width={2}>
-                        <Popup
-                          content="In Progress"
-                          trigger={<Icon name="fire" color="yellow" />}
-                        />
-                      </Grid.Column>
-                      <Grid.Column width={10}>
-                        <h3 className="item-description-font">
-                          {item.itemDescription}
-                        </h3>
-                      </Grid.Column>
-                      <Grid.Column width={3}>
-                        <Label
-                          onClick={() =>
-                            this.setState({
-                              updateModalOpen: true,
-                              updatedItem: item,
-                            })
-                          }
-                          as="a"
-                        >
-                          <Icon name="pencil" />
-                          Edit
-                        </Label>
-                      </Grid.Column>
-                      <Grid.Column width={1}>
-                        <Icon className="delete-icon" name="x"></Icon>
-                      </Grid.Column>
-                    </Grid.Row>
-                    <Divider></Divider>
-                  </Grid>
-                ) : item.itemStatus === 2 ? (
-                  <Grid>
-                    <Grid.Row className="todoList-item-align">
-                      <Grid.Column width={2}>
-                        <Popup
-                          content="Done"
-                          trigger={<Icon name="check" color="green" />}
-                        />
-                      </Grid.Column>
-                      <Grid.Column width={10}>
-                        <h3 className="item-description-font">
-                          {item.itemDescription}
-                        </h3>
-                      </Grid.Column>
-                      <Grid.Column width={3}>
-                        <Label
-                          onClick={() =>
-                            this.setState({
-                              updateModalOpen: true,
-                              updatedItem: item,
-                            })
-                          }
-                          as="a"
-                        >
-                          <Icon name="pencil" />
-                          Edit
-                        </Label>
-                      </Grid.Column>
-                      <Grid.Column width={1}>
-                        <Icon className="delete-icon" name="x"></Icon>
-                      </Grid.Column>
-                    </Grid.Row>
-                    <Divider></Divider>
-                  </Grid>
-                ) : (
-                  ""
-                )}
-              </div>
-            ))
-          : ""}
+        {_.isEmpty(this.state.todoList.todoListItems) ? (
+          <Message warning className="todoList-empty-message">
+            <Message.Header className="emptyList-message-header">
+              To do list is empty
+            </Message.Header>
+            <p className="emptyList-message-p">
+              To add some item in the list use the button above
+            </p>
+          </Message>
+        ) : (
+          <div>
+            {this.state.todoList.todoListItems
+              ? this.state.todoList.todoListItems.map((item) => (
+                  <div>
+                    {item.itemStatus === 0 ? (
+                      <Grid>
+                        <Grid.Row className="todoList-item-align">
+                          <Grid.Column width={2}>
+                            <Popup
+                              content="Not Started"
+                              trigger={<Icon name="pin" color="red" />}
+                            />
+                          </Grid.Column>
+                          <Grid.Column width={10}>
+                            <h3 className="item-description-font">
+                              {item.itemDescription}
+                            </h3>
+                          </Grid.Column>
+                          <Grid.Column width={3}>
+                            <Label
+                              onClick={() =>
+                                this.setState({
+                                  updateModalOpen: true,
+                                  updatedItem: item,
+                                })
+                              }
+                              as="a"
+                            >
+                              <Icon name="pencil" />
+                              Edit
+                            </Label>
+                          </Grid.Column>
+                          <Grid.Column width={1}>
+                            <Icon
+                              className="delete-icon"
+                              onClick={() => this.handleItemDelete(item.itemId)}
+                              name="x"
+                            ></Icon>
+                          </Grid.Column>
+                        </Grid.Row>
+                        <Divider></Divider>
+                      </Grid>
+                    ) : item.itemStatus === 1 ? (
+                      <Grid>
+                        <Grid.Row className="todoList-item-align">
+                          <Grid.Column width={2}>
+                            <Popup
+                              content="In Progress"
+                              trigger={<Icon name="fire" color="yellow" />}
+                            />
+                          </Grid.Column>
+                          <Grid.Column width={10}>
+                            <h3 className="item-description-font">
+                              {item.itemDescription}
+                            </h3>
+                          </Grid.Column>
+                          <Grid.Column width={3}>
+                            <Label
+                              onClick={() =>
+                                this.setState({
+                                  updateModalOpen: true,
+                                  updatedItem: item,
+                                })
+                              }
+                              as="a"
+                            >
+                              <Icon name="pencil" />
+                              Edit
+                            </Label>
+                          </Grid.Column>
+                          <Grid.Column width={1}>
+                            <Icon
+                              className="delete-icon"
+                              onClick={() => this.handleItemDelete(item.itemId)}
+                              name="x"
+                            ></Icon>
+                          </Grid.Column>
+                        </Grid.Row>
+                        <Divider></Divider>
+                      </Grid>
+                    ) : item.itemStatus === 2 ? (
+                      <Grid>
+                        <Grid.Row className="todoList-item-align">
+                          <Grid.Column width={2}>
+                            <Popup
+                              content="Done"
+                              trigger={<Icon name="check" color="green" />}
+                            />
+                          </Grid.Column>
+                          <Grid.Column width={10}>
+                            <h3 className="item-description-font">
+                              {item.itemDescription}
+                            </h3>
+                          </Grid.Column>
+                          <Grid.Column width={3}>
+                            <Label
+                              onClick={() =>
+                                this.setState({
+                                  updateModalOpen: true,
+                                  updatedItem: item,
+                                })
+                              }
+                              as="a"
+                            >
+                              <Icon name="pencil" />
+                              Edit
+                            </Label>
+                          </Grid.Column>
+                          <Grid.Column width={1}>
+                            <Icon
+                              className="delete-icon"
+                              onClick={() => this.handleItemDelete(item.itemId)}
+                              name="x"
+                            ></Icon>
+                          </Grid.Column>
+                        </Grid.Row>
+                        <Divider></Divider>
+                      </Grid>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                ))
+              : ""}
+          </div>
+        )}
       </Segment>
     );
   };
@@ -271,12 +327,20 @@ class TodoList extends Component {
                             fluid
                             placeholder="Add something to do ..."
                           />
+                          {this.state.errors.itemDescription ? (
+                            <h6 className="addItem-validation-error">
+                              {this.state.errors.itemDescription}
+                            </h6>
+                          ) : (
+                            ""
+                          )}
                         </Grid.Column>
                         <Grid.Column width={2}>
-                          <Button
+                          <LoadButton
+                            isButtonLoading={this.state.isButtonLoading}
                             onClick={this.handleAddItem}
-                            className="add-item-button"
-                            icon="plus"
+                            className={"add-item-button"}
+                            icon={"plus"}
                           />
                         </Grid.Column>
                       </Grid>

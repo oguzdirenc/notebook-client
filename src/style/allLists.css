@@ -18,6 +18,8 @@
 }
 .create-list-button {
   margin-left: 65% !important;
+  align-content: center !important;
+  background-color: #eaebec !important;
 }
 .all-list-segment {
   background-color: ghostwhite !important;
@@ -46,12 +48,18 @@
   margin-top: 1% !important;
   color: #4c4a37 !important;
   font-family: "Source Sans Pro", sans-serif !important;
-  font-size: 18px !important;
-  line-height: 18px !important;
+  font-size: 20px !important;
+  line-height: 20px !important;
+  text-align: left !important;
+  margin-left: 3% !important;
+  margin-top: 2% !important;
+  margin-bottom: 2% !important;
 }
 .todoList-description {
   margin-top: 1% !important;
   color: #4c4a37 !important;
+  text-align: left !important;
+  margin-left: 3% !important;
   font-family: "Source Sans Pro", sans-serif !important;
   font-size: 14px !important;
   line-height: 14px !important;
@@ -82,4 +90,12 @@
   font-family: Georgia, serif !important;
   font-size: 15px !important;
   line-height: 28px !important;
+}
+.todoList-delete-icon {
+  margin-left: 70% !important;
+  color: #4c4a37;
+}
+.todoList-delete-icon:hover {
+  color: red;
+  cursor: pointer;
 }

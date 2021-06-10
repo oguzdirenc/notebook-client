@@ -1,0 +1,14 @@
+.navbar-background {
+  background-color: ghostwhite !important;
+}
+.navbar-text-style {
+  margin-top: 1% !important;
+  color: #4c4a37 !important;
+  font-family: "Source Sans Pro", sans-serif !important;
+  font-size: 13px !important;
+  line-height: 13px !important;
+  font-weight: bold !important;
+}
+.logout-icon {
+  padding-left: 10% !important;
+}
